@@ -5,21 +5,21 @@ local geode_types = {}
 minetest.register_node("geodes:calcite", {
 	description = "Calcite",
 	tiles = {"calcite.png"},
-	groups = {cracky = 3},
+	groups = {cracky = 3, not_in_creative_inventory = 1},
 	sounds = default.node_sound_stone_defaults(),
 })
 
 minetest.register_node("geodes:amethyst_block", {
 	description = "Amethyst Block",
 	tiles = {"amethyst_block.png"},
-	groups = {cracky = 3},
+	groups = {cracky = 3, not_in_creative_inventory = 1},
 	sounds = default.node_sound_stone_defaults(),
 })
 
 minetest.register_node("geodes:basalt", {
 	description = "Basalt",
 	tiles = {"basalt.png"},
-	groups = {cracky = 3},
+	groups = {cracky = 3, not_in_creative_inventory = 1},
 	sounds = default.node_sound_stone_defaults(),
 })
 
@@ -31,7 +31,7 @@ minetest.register_node("geodes:amethyst_crystal", {
 	paramtype = "light",
 	sunlight_propagates = true,
 	paramtype2 = "wallmounted",
-	groups = {cracky = 3},
+	groups = {cracky = 3, not_in_creative_inventory = 1},
 	sounds = default.node_sound_stone_defaults(),
 	node_box = {
 		type = "fixed",
@@ -81,8 +81,9 @@ minetest.register_lbm({
 			return
 		end
 
+		local pcgr = PcgRandom(minetest.hash_node_position(pos))
 		local outer, middle, inner, crystal, fill, size_min, size_max = unpack(geode_types[math.random(1, #geode_types)])
-		local size = math.random(size_min, size_max)
+		local size = pcgr:next(size_min, size_max)
 
 		for x = -size, size do
 		for y = -size, size do
@@ -109,7 +110,7 @@ minetest.register_lbm({
 		for x = -size +4, size -4 do
 		for y = -size +4, size -4 do
 		for z = -size +4, size -4 do
-		if math.random(0, 10) == 0 and vector.distance(vector.new(x, y, z), vector.new()) >= size - 4 and vector.distance(vector.new(x, y, z), vector.new()) < size - 3 then
+		if pcgr:next(0, 10) == 0 and vector.distance(vector.new(x, y, z), vector.new()) >= size - 4 and vector.distance(vector.new(x, y, z), vector.new()) < size - 3 then
 
 			if minetest.get_node(pos + vector.new(x, y + 1, z)).name == inner then
 			minetest.set_node(pos + vector.new(x, y, z), {name = crystal, param2 = 0})
